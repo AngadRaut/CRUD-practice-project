@@ -19,4 +19,12 @@ public class StudentController {
        Student student =  this.service.saveStudent(std);
        return ResponseEntity.status(HttpStatus.OK).body("student saved successfully with id: "+student.getId());
     }
+
+    /// this controller is used to Update Student Data
+    @PutMapping("/updateStudent")
+    public ResponseEntity<?> updateStudent(@PathVariable Long id,@RequestBody Student std){
+        std.setId(id);
+        this.service.updateStudent(std);
+        return ResponseEntity.status(HttpStatus.OK).body("Student data Updated Successfully");
+    }
 }

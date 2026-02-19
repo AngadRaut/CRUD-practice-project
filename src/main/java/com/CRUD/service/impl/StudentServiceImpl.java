@@ -15,4 +15,10 @@ public class StudentServiceImpl implements StudentService {
     public Student saveStudent(Student saveStudent) {
         return this.studentRepository.save(saveStudent);
     }
+
+    @Override
+    public Student updateStudent(Student update) {
+        return this.studentRepository.save(update);
+    }
+
 }
