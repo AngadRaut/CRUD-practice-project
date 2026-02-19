@@ -22,7 +22,7 @@ public class StudentController {
 
     /// this controller is used to Update Student Data
 
-    @PutMapping("/updateStudent")
+    @PutMapping("/updateStudent/{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Long id,@RequestBody Student std){
         std.setId(id);
         this.service.updateStudent(std);
