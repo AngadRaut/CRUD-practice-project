@@ -21,10 +21,15 @@ public class StudentController {
     }
 
     /// this controller is used to Update Student Data
+
     @PutMapping("/updateStudent")
     public ResponseEntity<?> updateStudent(@PathVariable Long id,@RequestBody Student std){
         std.setId(id);
         this.service.updateStudent(std);
         return ResponseEntity.status(HttpStatus.OK).body("Student data Updated Successfully");
     }
+
+
+
+
 }
