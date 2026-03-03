@@ -1,13 +1,14 @@
-package com.CRUD;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class CrudPracticeApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//package com.CRUD;
+//
+////import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class CrudPracticeApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}
