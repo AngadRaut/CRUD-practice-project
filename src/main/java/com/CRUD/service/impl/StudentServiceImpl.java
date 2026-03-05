@@ -7,10 +7,12 @@ import com.CRUD.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+
     @Autowired
     private StudentRepository studentRepository;
 
@@ -20,13 +22,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void updateStudent(Student update) {
+    public List<Student> saveAll(List<Student> students) {
+        return this.studentRepository.saveAll(students);
+    }
 
+    @Override
+    public Student updateStudent(Long id, Student update) {
         Optional<Student> student = studentRepository.findById(update.getId());
-        if (student.isPresent()){
+        if (student.isPresent()) {
             Student old = student.get();
-
-            /// update require filed
             old.setFirstName(update.getFirstName());
             old.setLastName(update.getLastName());
             old.setAddress(update.getAddress());
@@ -36,13 +40,28 @@ public class StudentServiceImpl implements StudentService {
             old.setCollegeName(update.getCollegeName());
             old.setDob(update.getDob());
             old.setAge(update.getAge());
-
-            /// saving Updated Objects
-            this.studentRepository.save(old);
-
-        }else {
+           return this.studentRepository.save(old);
+        } else {
             throw new StudentNotFoundException("Student Not Found.." + update.getId());
         }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student Not Found" + id));
+        studentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
+
+    @Override
+    public Student findById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student not found" + id));
     }
 
 }
