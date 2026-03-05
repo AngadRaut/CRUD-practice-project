@@ -2,7 +2,6 @@ package com.CRUD.controller;
 
 import com.CRUD.model.Student;
 import com.CRUD.service.StudentService;
-import com.CRUD.service.impl.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,12 @@ public class StudentController {
     public ResponseEntity<?> addStudent(@RequestBody Student std){
        Student student =  this.service.saveStudent(std);
        return ResponseEntity.status(HttpStatus.OK).body("student saved successfully with id: "+student.getId());
+    }
+
+    @PostMapping("/addAllStudent")
+    public ResponseEntity<String> addStudents(@RequestBody List<Student> students) {
+        List<Student> savedStudents = service.saveAll(students);
+        return ResponseEntity.status(HttpStatus.OK).body("All Student Saved Successfully with id");
     }
 
     @PutMapping("/updateStudent/{id}")

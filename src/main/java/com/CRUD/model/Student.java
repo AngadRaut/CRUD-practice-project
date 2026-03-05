@@ -11,7 +11,7 @@ import lombok.*;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "First_Name")
     private String firstName;
@@ -24,12 +24,11 @@ public class Student {
     @Column(name = "Mobile_No")
     private String mobileNo;
     @Column(name = "Roll_No")
-    private int rollNo;
+    private Integer rollNo;
     @Column(name = "College_Name")
     private String collegeName;
     @Column(name = "Date_Of_Birth")
     private String dob;
     @Column(name = "Age")
-    private int age;
-
+    private Integer age;
 }
