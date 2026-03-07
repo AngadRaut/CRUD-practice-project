@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // 1️ Student Not Found
+    //Student Not Found
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ApiError> handleStudentNotFound(
             StudentNotFoundException ex,
@@ -36,7 +36,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // 2️ Validation Errors
+    //Duplicate Student Found
+    @ExceptionHandler(DuplicateStudentException.class)
+    public ResponseEntity<ApiError> handleDuplicateStudentException(DuplicateStudentException de,
+                                                                    WebRequest request) {
+        logger.error("Duplicate Student Found: {}", de.getMessage());
+        ApiError error = new ApiError(LocalDateTime.now(),
+                HttpStatus.FOUND.value(), "Duplicate Student Found", de.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(error, HttpStatus.FOUND);
+    }
+
+    //Validation Errors
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationException(
             MethodArgumentNotValidException ex,
@@ -59,7 +70,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // 3️ Database Constraint (Duplicate Email etc.)
+    //Database Constraint (Duplicate Email etc.)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDatabaseException(
             DataIntegrityViolationException ex,
@@ -78,7 +89,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-    // 4️ Generic Exception
+    //Generic Exception
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(
             Exception ex,

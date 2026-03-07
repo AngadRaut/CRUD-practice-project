@@ -1,6 +1,7 @@
 package com.CRUD.service.impl;
 
 import com.CRUD.dto.RegisterStudentDTO;
+import com.CRUD.exception.DuplicateStudentException;
 import com.CRUD.exception.StudentNotFoundException;
 import com.CRUD.model.Student;
 import com.CRUD.repository.StudentRepository;
@@ -101,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
         log.info("Registering student with email: {}", dto.getEmail());
         Student existing = studentRepository.getStudentByEmail(dto.getEmail());
         if (existing != null) {
-            throw new RuntimeException("Email already registered");
+            throw new DuplicateStudentException("Email already registered");
         }
         Student student = new Student();
         student.setFirstName(dto.getFirstName());
