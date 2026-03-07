@@ -2,6 +2,7 @@ package com.CRUD.controller;
 
 import com.CRUD.dto.LoginStudentDTO;
 import com.CRUD.dto.RegisterStudentDTO;
+import com.CRUD.exception.DuplicateStudentException;
 import com.CRUD.model.Student;
 import com.CRUD.service.StudentService;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -26,12 +28,12 @@ public class StudentController {
     @PostMapping("/register")
     public ResponseEntity<?> registerStudent(@Valid @RequestBody RegisterStudentDTO dto){
         log.info("Student registration started for email: {}", dto.getEmail());
-        Student student = service.registerStudent(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Student Register Successfully"+student.getId());
+        service.registerStudent(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Student Register Successfully");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginStudent(@RequestBody LoginStudentDTO dto){
+    public ResponseEntity<?> loginStudent(@Valid @RequestBody LoginStudentDTO dto){
         log.info("Student Enter Into Validation Process for email: {}", dto.getEmail());
         service.validateStudent(dto.getEmail(), dto.getPassword());
         return ResponseEntity.ok("Student Login Successfully..!");
