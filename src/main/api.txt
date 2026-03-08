@@ -1,15 +1,15 @@
 http://localhost:8530
 
-/api/addStudent
-/api/addAllStudent
-/api/updateStudent/id?
-/api/deleteStudent/id?
-/api/getStudent/id?
-/api/getAllStudent
-/api/findByName/firstName
+POST - /api/students
+POST - /api/students/batch          (Save ALL)
+PUT - /api/students/id
+DELETE - /api/students/id
+GET - /api/students/id
+GET - /api/students
+GET - /api/findByName/firstName
 
 
-Jason for CURD: -
+Jason for CURD (Dummy Data): -
 
 [
   {
