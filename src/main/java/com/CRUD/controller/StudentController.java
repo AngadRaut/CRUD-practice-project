@@ -1,8 +1,9 @@
 package com.CRUD.controller;
 
+import com.CRUD.dto.LoginResponseDTO;
 import com.CRUD.dto.LoginStudentDTO;
 import com.CRUD.dto.RegisterStudentDTO;
-import com.CRUD.exception.DuplicateStudentException;
+import com.CRUD.dto.ResponseStudentDTO;
 import com.CRUD.model.Student;
 import com.CRUD.service.StudentService;
 import jakarta.validation.Valid;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -26,39 +26,40 @@ public class StudentController {
     public static final Logger log = LoggerFactory.getLogger(StudentController.class);
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerStudent(@Valid @RequestBody RegisterStudentDTO dto){
+    public ResponseEntity<ResponseStudentDTO> registerStudent(@Valid @RequestBody RegisterStudentDTO dto) {
         log.info("Student registration started for email: {}", dto.getEmail());
-        service.registerStudent(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Student Register Successfully");
+        ResponseStudentDTO response = service.registerStudent(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginStudent(@Valid @RequestBody LoginStudentDTO dto){
+    public ResponseEntity<LoginResponseDTO> loginStudent(@Valid @RequestBody LoginStudentDTO dto) {
         log.info("Student Enter Into Validation Process for email: {}", dto.getEmail());
-        service.validateStudent(dto.getEmail(), dto.getPassword());
-        return ResponseEntity.ok("Student Login Successfully..!");
+        LoginResponseDTO response = service.validateStudent(dto.getEmail(), dto.getPassword());
+        return ResponseEntity.ok(response);
     }
 
     // used to add the new student in db
-    @PostMapping("/addStudent")
+    @PostMapping("/students")
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student std) {
-        log.info("addStudent Api Call");
+        log.info("Creating new student");
         log.debug("Saving student into database");
         Student student = this.service.saveStudent(std);
         log.info("Student saved successfully with id: {}", student.getId());
         return ResponseEntity.status(HttpStatus.OK).body("student saved successfully with id: " + student.getId());
     }
 
-    @PostMapping("/addAllStudent")
-    public ResponseEntity<String> addStudents(@RequestBody List<Student> students) {
+    @PostMapping("/students/batch")
+    public ResponseEntity<String> addAllStudents(@Valid @RequestBody List<Student> students) {
         log.info("addAllStudent Api Call");
         log.debug("Saving All Student into database");
         List<Student> savedStudents = service.saveAll(students);
         log.info("Total students saved: {}", savedStudents.size());
-        return ResponseEntity.ok("All students saved successfully");
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Total students saved: " + savedStudents.size());
     }
 
-    @PutMapping("/updateStudent/{id}")
+    @PutMapping("/students/{id}")
     public ResponseEntity<?> updateStudent(@Valid @PathVariable Long id,
                                            @RequestBody Student std) {
         std.setId(id);
@@ -69,7 +70,7 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body("Student data Updated Successfully");
     }
 
-    @DeleteMapping("/deleteStudent/{id}")
+    @DeleteMapping("/students/{id}")
     public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
         if (id == null || id <= 0) {
             log.warn("Invalid student id received: {}", id);
@@ -81,7 +82,7 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.OK).body("Student Data Delete Successfully");
     }
 
-    @GetMapping("/getStudent/{id}")
+    @GetMapping("/students/{id}")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         log.info("Searching student with id: {}", id);
         if (id <= 0) {
@@ -94,7 +95,7 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
-    @GetMapping("/getAllStudent")
+    @GetMapping("/students")
     public ResponseEntity<List<Student>> getAllStudents() {
         log.info("getAllStudent Api called");
         return ResponseEntity.ok(service.findAll());

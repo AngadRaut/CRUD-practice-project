@@ -1,17 +1,18 @@
 package com.CRUD.service;
 
+import com.CRUD.dto.LoginResponseDTO;
 import com.CRUD.dto.RegisterStudentDTO;
+import com.CRUD.dto.ResponseStudentDTO;
 import com.CRUD.model.Student;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface StudentService {
     Student saveStudent(Student saveStudent);
 
     List<Student> saveAll(List<Student> students);
 
-    void updateStudent(Long id, Student student);
+    Student updateStudent(Long id, Student student);
 
     void deleteById(Long id);
 
@@ -21,7 +22,7 @@ public interface StudentService {
 
     List<Student> findByName(String firstName);
 
-    public Student registerStudent(RegisterStudentDTO registerStudentDTO);
+    ResponseStudentDTO registerStudent(RegisterStudentDTO registerStudentDTO);
 
-    public Student validateStudent(String email, String password);
+    LoginResponseDTO validateStudent(String email, String password);
 }
