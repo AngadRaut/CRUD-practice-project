@@ -46,7 +46,7 @@ public class StudentController {
         log.debug("Saving student into database");
         Student student = this.service.saveStudent(std);
         log.info("Student saved successfully with id: {}", student.getId());
-        return ResponseEntity.status(HttpStatus.OK).body("student saved successfully with id: " + student.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body("student saved successfully with id: " + student.getId());
     }
 
     @PostMapping("/students/batch")
@@ -60,8 +60,8 @@ public class StudentController {
     }
 
     @PutMapping("/students/{id}")
-    public ResponseEntity<?> updateStudent(@Valid @PathVariable Long id,
-                                           @RequestBody Student std) {
+    public ResponseEntity<?> updateStudent(@PathVariable Long id,
+                                           @Valid @RequestBody Student std) {
         std.setId(id);
         log.info("updateStudent Api Call");
         log.debug("Update Student Data into Database");
@@ -83,33 +83,57 @@ public class StudentController {
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
+    public ResponseEntity<ResponseStudentDTO> getStudent(@PathVariable Long id) {
         log.info("Searching student with id: {}", id);
         if (id <= 0) {
-            log.warn("Invalid students id {}", id);
+            log.warn("Invalid student-id {}", id);
             return ResponseEntity.badRequest().build();
         }
-        log.debug("Get Student form Database");
+        log.debug("Fetching student from database");
         Student student = service.findById(id);
-        log.info("Student find Successfully with id: {}", id);
-        return ResponseEntity.ok(student);
+        ResponseStudentDTO dto = new ResponseStudentDTO(
+                student.getId(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getEmail(),
+                student.getMobileNo()
+        );
+        log.info("Student found successfully with id: {}", id);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/students")
-    public ResponseEntity<List<Student>> getAllStudents() {
-        log.info("getAllStudent Api called");
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<ResponseStudentDTO>> getAllStudents() {
+        log.info("Get all students API called");
+        List<ResponseStudentDTO> students = service.findAll();
+        List<ResponseStudentDTO> responseList = students.stream()
+                .map(std -> new ResponseStudentDTO(
+                        std.getId(),
+                        std.getFirstName(),
+                        std.getLastName(),
+                        std.getEmail(),
+                        std.getMobileNo()))
+                .toList();
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/findByName/{firstName}")
-    public ResponseEntity<?> findByName(@PathVariable String firstName) {
+    public ResponseEntity<List<ResponseStudentDTO>> findByName(@PathVariable String firstName) {
         log.info("Searching student with name: {}", firstName);
-        List<Student> byName = service.findByName(firstName);
-        if (byName.isEmpty()) {
+        List<ResponseStudentDTO> byName = service.findByName(firstName);
+        List<ResponseStudentDTO> responseList = byName.stream()
+                .map(std -> new ResponseStudentDTO(
+                        std.getId(),
+                        std.getFirstName(),
+                        std.getLastName(),
+                        std.getEmail(),
+                        std.getMobileNo()))
+                .toList();
+        if (responseList.isEmpty()) {
             log.warn("Student not found with name {}", firstName);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student Not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseList);
         }
-        log.info("Student find with name: {}", firstName);
-        return ResponseEntity.ok(byName);
+        log.info("Student found with name: {}", firstName);
+        return ResponseEntity.ok(responseList);
     }
 }

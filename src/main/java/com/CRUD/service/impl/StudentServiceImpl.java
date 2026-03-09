@@ -89,15 +89,24 @@ public class StudentServiceImpl implements StudentService {
     @Transactional(readOnly = true)
     @Override
     @Cacheable(value = "studentList")
-    public List<Student> findAll() {
-        log.info("Get All Student");
-        return studentRepository.findAll();
+    public List<ResponseStudentDTO> findAll() {
+        log.info("Fetching all students from database");
+        List<Student> students = studentRepository.findAll();
+        return students.stream()
+                .map(student -> new ResponseStudentDTO(
+                        student.getId(),
+                        student.getFirstName(),
+                        student.getLastName(),
+                        student.getEmail(),
+                        student.getMobileNo()
+                ))
+                .toList();
     }
 
     @Override
     @Cacheable(value = "studentById", key = "#id")
     public Student findById(Long id) {
-        log.info("Get Student By id:{}", id);
+        log.info("[DB HIT] Fetching student id={}", id);
         return studentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Student Not Found By Id : {}", id);
@@ -107,9 +116,17 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Cacheable(value = "studentByName", key = "#firstName")
-    public List<Student> findByName(String firstName) {
+    public List<ResponseStudentDTO> findByName(String firstName) {
         log.info("Finding students with first name: {}", firstName);
-        return studentRepository.findByFirstName(firstName);
+        List<Student> student = studentRepository.findByFirstName(firstName);
+        return student.stream()
+                .map(std -> new ResponseStudentDTO(
+                        std.getId(),
+                        std.getFirstName(),
+                        std.getLastName(),
+                        std.getEmail(),
+                        std.getMobileNo()))
+                .toList();
     }
 
     @Override

@@ -16,11 +16,11 @@ public interface StudentService {
 
     void deleteById(Long id);
 
-    List<Student> findAll();
+    List<ResponseStudentDTO> findAll();
 
     Student findById(Long id);
 
-    List<Student> findByName(String firstName);
+    List<ResponseStudentDTO> findByName(String firstName);
 
     ResponseStudentDTO registerStudent(RegisterStudentDTO registerStudentDTO);
 
