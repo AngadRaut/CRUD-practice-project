@@ -20,12 +20,12 @@ public class EmailServiceImplements implements EmailService {
             System.out.println("EMAIL SERVICE CALLED for: " + toEmail);
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(toEmail);
-            message.setSubject("Welcome to Student Registry Service");
+            message.setSubject("Welcome to Angad-Anna-Mitra-Mandal");
             message.setText(
                     "Hello " + name + ",\n\n" +
-                            "Welcome to Student Registry Service!\n" +
-                            "Your Student account has been created successfully.\n\n" +
-                            "Best Regards,\nSRS Admin"
+                            "Welcome to Angad-Anna-Mitr-Mandal..!\n" +
+                            "Your as Member, account has been created successfully.\n\n" +
+                            "Best Regards,\nAple Anna"
             );
             mailSender.send(message);
             System.out.println("EMAIL SENT SUCCESSFULLY");
