@@ -1,5 +1,6 @@
 package com.CRUD.dto;
 
+import com.CRUD.model.Student;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
