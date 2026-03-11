@@ -4,6 +4,7 @@ import com.CRUD.dto.LoginResponseDTO;
 import com.CRUD.dto.LoginStudentDTO;
 import com.CRUD.dto.RegisterStudentDTO;
 import com.CRUD.dto.ResponseStudentDTO;
+import com.CRUD.exception.DuplicateEmailFound;
 import com.CRUD.model.Student;
 import com.CRUD.service.EmailService;
 import com.CRUD.service.StudentService;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,14 +50,24 @@ public class StudentController {
     public ResponseEntity<?> addStudent(@Valid @RequestBody Student std) {
         log.info("Creating new student");
         log.debug("Saving student into database");
-        Student student = service.saveStudent(std);
-        //sending email to student
-        emailService.sendEmployeeWelcomeEmail(
-                std.getEmail(),
-                std.getFirstName()
-        );
-        log.info("Student saved successfully with id: {}", student.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body("student saved successfully with id: " + student.getId());
+
+        try {
+            boolean isEmailExist = service.emailExists(std.getEmail());
+            if (isEmailExist){
+                return ResponseEntity.status(HttpStatus.FOUND).body("Duplicate Email Found");
+            }
+            Student student = service.saveStudent(std);
+            //sending email to student
+//            emailService.sendEmployeeWelcomeEmail(
+//                    std.getEmail(),
+//                    std.getFirstName()
+//            );
+            log.info("Student saved successfully with id: {}", student.getId());
+        }catch (DuplicateEmailFound e){
+            log.warn("Duplicate Email Found");
+            System.out.println("Duplicate Email Found");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("student saved successfully with id: "+std.getId());
     }
 
     @PostMapping("/students/batch")
@@ -154,5 +166,13 @@ public class StudentController {
         }
         log.info("Student found with name: {}", firstName);
         return ResponseEntity.ok(responseList);
+    }
+
+    @GetMapping("/students/page")
+    public ResponseEntity<?> pagination(@RequestParam(defaultValue = "0")int page,
+                                        @RequestParam(defaultValue = "5")int size,
+                                        @RequestParam(defaultValue = "firstName")String sortBy){
+        Page<ResponseStudentDTO> allStudents = service.getAllStudents(page, size, sortBy);
+        return ResponseEntity.ok(allStudents);
     }
 }
