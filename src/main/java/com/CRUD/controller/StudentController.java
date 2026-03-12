@@ -108,7 +108,7 @@ public class StudentController {
             return ResponseEntity.badRequest().body("Invalid student id");
         }
         log.debug("Student Delete From Database");
-        this.service.deleteById(id);
+        service.deleteById(id);
         log.info("Student Delete Successfully by id: {}", id);
         return ResponseEntity.status(HttpStatus.OK).body("Student Data Delete Successfully");
     }
