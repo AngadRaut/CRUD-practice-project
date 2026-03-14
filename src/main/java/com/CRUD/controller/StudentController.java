@@ -58,10 +58,10 @@ public class StudentController {
             }
             Student student = service.saveStudent(std);
             //sending email to student
-//            emailService.sendEmployeeWelcomeEmail(
-//                    std.getEmail(),
-//                    std.getFirstName()
-//            );
+            emailService.sendEmployeeWelcomeEmail(
+                    std.getEmail(),
+                    std.getFirstName()
+            );
             log.info("Student saved successfully with id: {}", student.getId());
         }catch (DuplicateEmailFound e){
             log.warn("Duplicate Email Found");
