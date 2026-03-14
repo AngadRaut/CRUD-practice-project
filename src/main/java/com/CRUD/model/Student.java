@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 public class Student {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "First Name cannot be blank")
@@ -67,4 +68,7 @@ public class Student {
     @Max(60)
     @Column(name = "Age")
     private Integer age;
+
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
+    private List<StudentCourses> courses;
 }
